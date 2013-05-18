@@ -2,15 +2,17 @@
 /*or (at your option) any later version.                                   */
 /*For more information, see: http://www.gnu.org/copyleft/lgpl.html         */
 /*Version 1.0a                                                             */
-#ifndef _TINYCURSES_H
-#define _TINYCURSES_H
+
+#ifndef TINYCURSES_H_DEFINED
+#define TINYCURSES_H_DEFINED
+
 #include "SDL.h"
 #include "SDL_ttf.h"
 
 /* Defining bool for C/C++ compatibility.*/
-#define bool char
-#define true 1
-#define false 0
+//#define bool char
+//#define true 1
+//#define false 0
 
 /* These are the keyboard keys that are defined.*/
 #define KEY_UP SDLK_UP
@@ -59,59 +61,65 @@
 #define KEY_WHEELUP 1336
 #define KEY_WHEELDOWN 1335
 
-extern "C"
+class TinyCurses
 {
+public:
 /* These move the cursor and put things on the screen.*/
-extern int addch(int ch);
-extern int printw(const char *s, ...);
-extern int move(char x,char y);
-extern int refresh();
-extern int clear();
-extern int color(char r,char g,char b,char fr,char fg,char fb);
-extern int setcursor(bool c);
+static int addch(int ch);
+static int printw(const char *s, ...);
+static int move(char x,char y);
+static int refresh();
+static int clear();
+static int color(char r,char g,char b,char fr,char fg,char fb);
+static int setcursor(bool c);
 
 /* These move the cursor, print the character/text and move the cursor back*/
-extern int mvprintw(const char *s,int x,int y, ...);
-extern int mvaddch(int c,int x,int y);
+static int mvprintw(const char *s,int x,int y, ...);
+static int mvaddch(int c,int x,int y);
 
 /* These get input from the user*/
-extern int getch();
-extern char *getstr(char *s,int l);
-extern int getmouse(int *x,int *y,bool real);
+static int getch();
+static char *getstr(char *s,int l);
+static int getmouse(int *x,int *y,bool real);
+
+static int initscr();
+static void endwin();
 
 /* These are extended versions of the functions above functions.*/
-extern int initscrext(int w,int h,bool real);
-extern int addchext(int ch,int x,int y,char r,char g,char b,char fr,char fg,char fb);
-extern int printwext(char *s,int x,int y,char r,char g,char b,char fr,char fg,char fb, ...);
-extern int getchext(int w);
-extern int clearext(int ch,char r,char g,char b,char fr,char fg,char fb);
+static int initscrext(int w,int h,bool real);
+static int addchext(int ch,int x,int y,char r,char g,char b,char fr,char fg,char fb);
+static int printwext(char *s,int x,int y,char r,char g,char b,char fr,char fg,char fb, ...);
+static int getchext(int w);
+static int clearext(int ch,char r,char g,char b,char fr,char fg,char fb);
 
 /* These are advanced features.*/
-extern int setalpha(char a);
-extern int setlayer(char l);
-extern int setlayershown(char l,bool s);
-extern int changecolor(int x,int y,char r,char g,char b,char fr,char fg,char fb);
-extern int changech(int ch,int x,int y);
-extern int addcolor(int x,int y,int r,int g,int b,int fr,int fg,int fb);
-extern int setcaption(char *c);
-extern int setcursorlook(char r,char g,char b);
-extern int setfont(char *f,int pt);
-extern int clearlayer(int l);
+static int setalpha(char a);
+static int setlayer(char l);
+static int setlayershown(char l,bool s);
+static int changecolor(int x,int y,char r,char g,char b,char fr,char fg,char fb);
+static int changech(int ch,int x,int y);
+static int addcolor(int x,int y,int r,int g,int b,int fr,int fg,int fb);
+static int setcaption(char *c);
+static int setcursorlook(char r,char g,char b);
+static int setfont(char *f,int pt);
+static int clearlayer(int l);
 
 /* These are tinycurse's "private" variables. Using them directly IS encouraged,*/
 /* but be careful! Know what you're doing :)                                    */
-
-extern int TC_X,TC_Y,TC_R,TC_G,TC_B,TC_FR,TC_FG,TC_FB,TC_A,TC_FA,TC_L,TC_W,TC_H,TC_XSpace,TC_YSpace;
-extern int TC_CR,TC_CG,TC_CB;
-extern bool TC_Show;
-extern TTF_Font *TC_Font;
-extern SDL_Surface *TC_Screen;
-extern bool TC_LayersShown[7];
-extern Uint32 TC_Layers[255][255][7][9];
-extern char *TC_FontName;
-extern int TC_FontSize;
+private:
+static int TC_X,TC_Y,TC_R,TC_G,TC_B,TC_FR,TC_FG,TC_FB,TC_A,TC_FA,TC_L,TC_W,TC_H,TC_XSpace,TC_YSpace, TC_MX, TC_MY;
+static int TC_CR,TC_CG,TC_CB;
+static bool TC_Show, TC_On, TC_Wait;
+static TTF_Font *TC_Font;
+static SDL_Surface *TC_Screen;
+static bool TC_LayersShown[7];
+static Uint32 TC_Layers[255][255][7][9];
+static char *TC_FontName;
+static int TC_FontSize;
 
 /* This is an internally used function.*/
-extern int BOUND(int x,int min,int max);
-}
-#endif
+static int BOUND(int x,int min,int max);
+};
+
+#endif /* TINYCURSES_H_DEFINED */
+

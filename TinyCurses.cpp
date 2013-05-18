@@ -2,55 +2,81 @@
 /*or (at your option) any later version.                                   */
 /*For more information, see: http://www.gnu.org/copyleft/lgpl.html         */
 /*Version 1.0a                                                             */
-#include "TinyCurses.h"
+#include "TinyCurses.hpp"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-int TC_X=0,TC_Y=0,TC_R=0,TC_G=0,TC_B=0,TC_FR=255,TC_FG=255,TC_FB=255,TC_A=255,TC_FA=255,TC_L=0,TC_W=0,TC_H=0,TC_XSpace=1,TC_YSpace=1;
-int TC_CR=255,TC_CG=255,TC_CB=255;
-bool TC_Show=true;
-TTF_Font *TC_Font=NULL;
-SDL_Surface *TC_Screen=NULL;
-bool TC_LayersShown[7];
-Uint32 TC_Layers[255][255][7][9];
-char *TC_FontName=(char *)"./Font.ttf";
-int TC_FontSize=14;
-bool TC_Wait=false;
-bool TC_On=false;
+int TinyCurses::TC_X=0;
+int TinyCurses::TC_Y=0;
+int TinyCurses::TC_R=0;
+int TinyCurses::TC_G=0;
+int TinyCurses::TC_B=0;
+int TinyCurses::TC_FR=255;
+int TinyCurses::TC_FG=255;
+int TinyCurses::TC_FB=255;
+int TinyCurses::TC_A=255;
+int TinyCurses::TC_FA=255;
+int TinyCurses::TC_L=0;
+int TinyCurses::TC_W=0;
+int TinyCurses::TC_H=0;
+int TinyCurses::TC_XSpace=1;
+int TinyCurses::TC_YSpace=1;
 
-int TC_MX=0,TC_MY=0;
+int TinyCurses::TC_CR=255;
+int TinyCurses::TC_CG=255;
+int TinyCurses::TC_CB=255;
 
-void endwin();
+bool         TinyCurses::TC_Show=true;
+TTF_Font*    TinyCurses::TC_Font=NULL;
+SDL_Surface* TinyCurses::TC_Screen=NULL;
 
-int initscr()
+bool         TinyCurses::TC_LayersShown[7];
+Uint32       TinyCurses::TC_Layers[255][255][7][9];
+
+char* TinyCurses::TC_FontName=(char *)"./ttf/Terminus.ttf";
+int  TinyCurses::TC_FontSize=14;
+
+bool  TinyCurses::TC_Wait = false;
+bool  TinyCurses::TC_On   = false;
+
+int TinyCurses::TC_MX = 0;
+int TinyCurses::TC_MY = 0;
+
+int TinyCurses::initscr()
 {
-  if(TC_On==false)
-      initscrext(80,25,false);
+  if (TC_On == false)
+      initscrext(80, 25, false);
+
   return 0;
-};
-void endwin()
+}
+void TinyCurses::endwin()
 {
-  if(TC_Wait==false)
+  if(TC_Wait == false)
     getch();
+
   TTF_CloseFont(TC_Font);
   TTF_Quit();
   SDL_Quit();
-};
-
-int addch(int ch)
+}
+int TinyCurses::addch(int ch)
 {
-  if(TC_On==false)
+  if(TC_On == false)
     initscr();
-  if(TC_X<0)
+
+  if(TC_X < 0)
     TC_X=0;
-  if(TC_Y<0)
+
+  if(TC_Y < 0)
     TC_Y=0;
+
   if(TC_X>TC_W-1)
-    TC_X=TC_W-1;
+    TC_X = TC_W-1;
+
   if(TC_Y>TC_H-1)
-    TC_Y=TC_H-1;
+    TC_Y = TC_H-1;
+
   TC_Layers[TC_X][TC_Y][TC_L][0] = ch;
   TC_Layers[TC_X][TC_Y][TC_L][1] = TC_R;
   TC_Layers[TC_X][TC_Y][TC_L][2] = TC_G;
@@ -60,17 +86,21 @@ int addch(int ch)
   TC_Layers[TC_X][TC_Y][TC_L][6] = TC_FG;
   TC_Layers[TC_X][TC_Y][TC_L][7] = TC_FB;
   TC_Layers[TC_X][TC_Y][TC_L][8] = TC_FA;
+
   TC_X++;
+
   if(TC_X>TC_W-1)
     {
       TC_X=0;
       TC_Y++;
+
       if(TC_Y>TC_H-1)
         TC_Y=TC_H-1;
-    };
+    }
+
   return 0;
-};
-int printw(const char *s, ...)
+}
+int TinyCurses::printw(const char *s, ...)
 {
   char buf[255];
   va_list a;
@@ -92,7 +122,7 @@ int printw(const char *s, ...)
     };
   return 0;
 };
-int mvprintw(const char *s,int x,int y, ...)
+int TinyCurses::mvprintw(const char *s,int x,int y, ...)
 {
   char buf[255];
   va_list a;
@@ -119,7 +149,7 @@ int mvprintw(const char *s,int x,int y, ...)
   move(tx,ty);
   return 0;
 };
-int mvaddch(int c,int x,int y)
+int TinyCurses::mvaddch(int c,int x,int y)
 {
   int tx,ty;
   if(TC_On==false)
@@ -131,7 +161,7 @@ int mvaddch(int c,int x,int y)
   move(tx,ty);
   return 0;
 };
-int move(char x,char y)
+int TinyCurses::move(char x,char y)
 {
   if(TC_On==false)
     initscr();
@@ -147,7 +177,7 @@ int move(char x,char y)
     TC_Y=0;
   return 0;
 };
-int refresh()
+int TinyCurses::refresh()
 {
   int i,j,k;
   Uint8 a;
@@ -196,7 +226,7 @@ int refresh()
   SDL_Flip(TC_Screen);
   return 0;
 };
-int clear()
+int TinyCurses::clear()
 {
   if(TC_On==false)
     initscr();
@@ -204,7 +234,7 @@ int clear()
   clearlayer(0);
   return 0;
 };
-int color(char r,char g,char b,char fr,char fg,char fb)
+int TinyCurses::color(char r,char g,char b,char fr,char fg,char fb)
 {
   if(TC_On==false)
     initscr();
@@ -216,7 +246,7 @@ int color(char r,char g,char b,char fr,char fg,char fb)
   TC_FB=fb;
   return 0;
 };
-int setcursor(bool c)
+int TinyCurses::setcursor(bool c)
 {
   if(TC_On==false)
     initscr();
@@ -224,7 +254,7 @@ int setcursor(bool c)
   return 0;
 };
 
-int getch()
+int TinyCurses::getch()
 {
   SDL_Event e;
   if(TC_On==false)
@@ -366,7 +396,7 @@ int getch()
     };
   return 0;
 };
-char *getstr(char *s,int l)
+char *TinyCurses::getstr(char *s,int l)
 {
   char *b;
   char buf[255];
@@ -412,14 +442,14 @@ char *getstr(char *s,int l)
     };
   return b;
 };
-int getmouse(int *x,int *y,bool real)
+int TinyCurses::getmouse(int *x,int *y,bool real)
 {
   *x=real?TC_MX:TC_MX/TC_XSpace;
   *y=real?TC_MY:TC_MY/TC_YSpace;
   return 0;
 };
 
-int initscrext(int w,int h,bool real)
+int TinyCurses::initscrext(int w,int h,bool real)
 {
   int x;
   if(TC_On==true)
@@ -447,7 +477,7 @@ int initscrext(int w,int h,bool real)
    clear();
   return 0;
 };
-int addchext(int ch,int x,int y,char r,char g,char b,char fr,char fg,char fb)
+int TinyCurses::addchext(int ch,int x,int y,char r,char g,char b,char fr,char fg,char fb)
 {
   int br,bg,bb,bfr,bfg,bfb;
   if(TC_On==false)
@@ -459,7 +489,7 @@ int addchext(int ch,int x,int y,char r,char g,char b,char fr,char fg,char fb)
   color(br,bg,bb,bfr,bfg,bfb);
   return 0;
 };
-int printwext(char *s,int x,int y,char r,char g,char b,char fr,char fg,char fb, ...)
+int TinyCurses::printwext(char *s,int x,int y,char r,char g,char b,char fr,char fg,char fb, ...)
 {
   char buf[255];
   va_list a;
@@ -488,7 +518,7 @@ int printwext(char *s,int x,int y,char r,char g,char b,char fr,char fg,char fb, 
   color(br,bg,bb,bfr,bfg,bfb);
   return 0;
 };
-int getchext(int w)
+int TinyCurses::getchext(int w)
 {
   Uint32 t;
   SDL_Event e;
@@ -631,7 +661,7 @@ int getchext(int w)
     };
   return -1;
 };
-int clearext(int ch,char r,char g,char b,char fr,char fg,char fb)
+int TinyCurses::clearext(int ch,char r,char g,char b,char fr,char fg,char fb)
 {
   int i,j,k;
   SDL_Rect rt;
@@ -661,7 +691,7 @@ int clearext(int ch,char r,char g,char b,char fr,char fg,char fb)
   color(br,bg,bb,bfr,bfg,bfb);
   return 0;
 };
-int clearlayer(int l)
+int TinyCurses::clearlayer(int l)
 {
   int i,j;
   int br,bg,bb,bfr,bfg,bfb,bl,ba,bfa,bx,by;
@@ -679,14 +709,14 @@ int clearlayer(int l)
   return 0;
 };
 
-int setalpha(char a)
+int TinyCurses::setalpha(char a)
 {
   if(TC_On==false)
     initscr();
   TC_FA=a;
   return 0;
 };
-int setlayer(char l)
+int TinyCurses::setlayer(char l)
 {
   if(TC_On==false)
     initscr();
@@ -697,7 +727,7 @@ int setlayer(char l)
     TC_L=6;
   return 0;
 };
-int setlayershown(char l,bool s)
+int TinyCurses::setlayershown(char l,bool s)
 {
   if(TC_On==false)
     initscr();
@@ -706,7 +736,7 @@ int setlayershown(char l,bool s)
   TC_LayersShown[(int)l]=s;
   return 0;
 };
-int changecolor(int x,int y,char r,char g,char b,char fr,char fg,char fb)
+int TinyCurses::changecolor(int x,int y,char r,char g,char b,char fr,char fg,char fb)
 {
   if(TC_On==false)
     initscr();
@@ -722,7 +752,7 @@ int changecolor(int x,int y,char r,char g,char b,char fr,char fg,char fb)
   TC_Layers[x][y][TC_L][8] = TC_FA;
   return 0;
 };
-int changech(int ch,int x,int y)
+int TinyCurses::changech(int ch,int x,int y)
 {
   if(TC_On==false)
     initscr();
@@ -731,7 +761,7 @@ int changech(int ch,int x,int y)
   TC_Layers[x][y][TC_L][0] = ch;
   return 0;
 };
-int addcolor(int x,int y,int r,int g,int b,int fr,int fg,int fb)
+int TinyCurses::addcolor(int x,int y,int r,int g,int b,int fr,int fg,int fb)
 {
   Uint8 r2,g2,b2,fr2,fg2,fb2,a2,fa2;
   if(TC_On==false)
@@ -755,14 +785,14 @@ int addcolor(int x,int y,int r,int g,int b,int fr,int fg,int fb)
   changecolor(x,y,BOUND(r,0,255),BOUND(g,0,255),BOUND(b,0,255),BOUND(fr,0,255),BOUND(fg,0,255),BOUND(fb,0,255));
   return 0;
 };
-int setcaption(char *c)
+int TinyCurses::setcaption(char *c)
 {
   if(TC_On==false)
     initscr();
   SDL_WM_SetCaption(c,NULL);
   return 0;
 };
-int setcursorlook(char r,char g,char b)
+int TinyCurses::setcursorlook(char r,char g,char b)
 {
   if(TC_On==false)
     initscr();
@@ -771,7 +801,7 @@ int setcursorlook(char r,char g,char b)
   TC_CB=b;
   return 0;
 };
-int setfont(char *f,int pt)
+int TinyCurses::setfont(char *f,int pt)
 {
   if(f!=NULL)
     TC_FontName=f;
@@ -779,7 +809,7 @@ int setfont(char *f,int pt)
   return 0;
 };
 
-int BOUND(int x,int min,int max)
+int TinyCurses::BOUND(int x,int min,int max)
 {
   if(x>max)
     x=max;
